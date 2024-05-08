@@ -8,6 +8,50 @@ app.use(express.json());
 
 initializeDatabase();
 
+/* const newRestaurant = {
+  name: "Yo China",
+  cuisine: ["Chinese", "Italian"],
+  location: "MG Road, Bangalore",
+  rating: 3.9,
+  reviews: [],
+  website: "https://yo-example.com",
+  phoneNumber: "+1288997392",
+  openHours: "Tue-Sun: 10:00 AM - 11:00 PM",
+  priceRange: "$$$ (31-60)",
+  reservationsNeeded: true,
+  isDeliveryAvailable: false,
+  menuUrl: "https://yo-example.com/menu",
+  photos: [
+    "https://example.com/yo-photo1.jpg",
+    "https://example.com/yo-photo2.jpg",
+    "https://example.com/yo-photo3.jpg",
+  ],
+}; */
+
+async function createData(newRestaurant) {
+  try {
+    const restaurant = new Restaurants(newRestaurant);
+    const saveRestaurant = await restaurant.save();
+    return saveRestaurant;
+  } catch (error) {
+    throw error;
+  }
+}
+
+app.post("/restaurants", async (req, res) => {
+  try {
+    const savedRestaurant = await createData(req.body);
+    res
+      .status(200)
+      .json({
+        message: "restaurant added successfully",
+        restaurant: savedRestaurant,
+      });
+  } catch (error) {
+    res.status(500).json({ error: "failed to fetch data" });
+  }
+});
+
 async function readAllRestaurants() {
   try {
     const allRestaurant = await Restaurants.find();
