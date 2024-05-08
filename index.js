@@ -41,12 +41,10 @@ async function createData(newRestaurant) {
 app.post("/restaurants", async (req, res) => {
   try {
     const savedRestaurant = await createData(req.body);
-    res
-      .status(200)
-      .json({
-        message: "restaurant added successfully",
-        restaurant: savedRestaurant,
-      });
+    res.status(200).json({
+      message: "restaurant added successfully",
+      restaurant: savedRestaurant,
+    });
   } catch (error) {
     res.status(500).json({ error: "failed to fetch data" });
   }
@@ -160,6 +158,24 @@ app.get("/restaurants/location/:restaurantLocation", async (req, res) => {
     } else {
       res.status(404).json({ error: "restaurant not found" });
     }
+  } catch (error) {
+    res.status(500).json({ error: "failed to fetch data" });
+  }
+});
+
+async function deleteRestaurant(resId) {
+  try {
+    const deleteRes = await Restaurants.findByIdAndDelete(resId);
+    return deleteRes;
+  } catch (error) {
+    throw error;
+  }
+}
+
+app.delete("/restaurants/:restaurantId", async (req, res) => {
+  try {
+    const deletedRestaurant = await deleteRestaurant(req.params.restaurantId);
+    res.status(200).json({ message: "deleted restaurant successfully" });
   } catch (error) {
     res.status(500).json({ error: "failed to fetch data" });
   }
